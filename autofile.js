@@ -1,68 +1,53 @@
-/*jshint es5:true*/
-
 'use strict';
 
 var glob    = require('glob');
 var async   = require('async');
 var path    = require('path');
 var fs      = require('fs');
-var utils   = require('mout');
 var mkdirp  = require('mkdirp');
 
-var task = {
-    id          : 'mv',
-    author      : 'Indigo United',
-    name        : 'Move',
-    description : 'Move a file or set of files.',
-    options: {
-        files: {
-            description: 'Which files should be moved. Accepts an object in which keys are the source files and values the destination. Source values support minimatch.'
-        },
-        glob: {
-            description: 'The options to pass to glob (check https://npmjs.org/package/glob for details).',
-            default: null
-        }
-    },
-    tasks:
-    [
-        {
-            task: function (opt, ctx, next) {
-                opt.glob = opt.glob || {};
-                var sources = Object.keys(opt.files);
-                var error;
+module.exports = function (task) {
+    task
+    .id('mv')
+    .name('Move')
+    .description('Move a file or set of files.')
+    .author('Indigo United')
 
-                // Cycle through each source
-                // Note that series is used to avoid conflicts between each pattern
-                async.forEachSeries(sources, function (pattern, next) {
-                    var dsts = utils.lang.isArray(opt.files[pattern]) ? opt.files[pattern] : [opt.files[pattern]];
-                    dsts = utils.array.unique(dsts.map(function (dst) { return path.normalize(dst); }));
-                    pattern = path.normalize(pattern);
+    .option('files', 'Which files should be moved. Accepts an object in which keys are the source files and values the destination. Source values support minimatch.')
+    .option('glob', 'The options to pass to glob (check https://npmjs.org/package/glob for details).', null)
 
-                    // Expand the files to get an array of files and directories
-                    expand(pattern, opt.glob, function (err, files, dirs, directMatch) {
-                        if (err) {
-                            return next(err);
-                        }
+    .do(function (opt, ctx, next) {
+        opt.glob = opt.glob || {};
+        var sources = Object.keys(opt.files);
+        var error;
 
-                        if (!files.length && !dirs.length) {
-                            error = new Error('ENOENT, no such file or directory \'' + pattern + '\'');
-                            error.code = 'ENOENT';
-                            return next(error);
-                        }
+        // Cycle through each source
+        // Note that series is used to avoid conflicts between each pattern
+        async.forEachSeries(sources, function (pattern, next) {
+            var dst = opt.files[pattern];
+            pattern = path.normalize(pattern);
 
-                        // Process the matches for each dst
-                        async.forEach(dsts, function (dst, next) {
-                            if (directMatch) {
-                                processDirectMatch(files, dirs, dst, ctx, next);
-                            } else {
-                                processPatternMatch(pattern, files, dirs, dst, ctx, next);
-                            }
-                        }, next);
-                    });
-                }, next);
-            }
-        }
-    ]
+            // Expand the files to get an array of files and directories
+            expand(pattern, opt.glob, function (err, files, dirs, directMatch) {
+                if (err) {
+                    return next(err);
+                }
+
+                if (!files.length && !dirs.length) {
+                    error = new Error('ENOENT, no such file or directory \'' + pattern + '\'');
+                    error.code = 'ENOENT';
+                    return next(error);
+                }
+
+                // Process the matches
+                if (directMatch) {
+                    processDirectMatch(files, dirs, dst, ctx, next);
+                } else {
+                    processPatternMatch(pattern, files, dirs, dst, ctx, next);
+                }
+            });
+        }, next);
+    });
 };
 
 /**
@@ -117,7 +102,7 @@ function processDirectMatch(files, dirs, dst, ctx, next) {
                 if (tmp) {
                     mkdirp(tmp, function (err) {
                         if (err) {
-                            return err;
+                            return next(err);
                         }
 
                         move(src, dst, ctx, next);
@@ -132,7 +117,7 @@ function processDirectMatch(files, dirs, dst, ctx, next) {
                 if (!stat) {
                     fs.mkdir(dst, function (err) {
                         if (err) {
-                            return err;
+                            return next(err);
                         }
 
                         dst = path.join(dst, path.basename(src));
@@ -302,5 +287,3 @@ function relativePath(file, pattern) {
 
     return path.basename(file);
 }
-
-module.exports = task;

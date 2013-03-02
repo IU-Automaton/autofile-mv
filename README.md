@@ -1,9 +1,9 @@
 `automaton task` - http://indigounited.com/automaton
 
-rm
+mv
 ===
 
-Remove file or set of files.
+Move a file or set of files.
 
 *Indigo United 2013*
 

@@ -1,10 +1,10 @@
 {
   "name": "autofile-mv",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Move a file or set of files.",
   "main": "autofile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -R spec"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,15 @@
   ],
   "author": "Indigo United",
   "license": "MIT",
-  "readmeFilename": "README.md"
+  "peerDependencies": {
+    "async": "~0.2",
+    "mkdirp": "~0.3",
+    "glob": "~3.1"
+  },
+  "devDependencies": {
+    "automaton": "~0.1.4",
+    "rimraf": "~2.1.4",
+    "expect.js": "~0.2.0",
+    "mocha": "~1.8.1"
+  }
 }
