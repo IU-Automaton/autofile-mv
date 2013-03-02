@@ -21,10 +21,10 @@
   ],
   "author": "Indigo United",
   "license": "MIT",
-  "peerDependencies": {
-    "async": "~0.2",
-    "mkdirp": "~0.3",
-    "glob": "~3.1"
+  "dependencies": {
+    "async": "~0.2.5",
+    "glob": "~3.1.21",
+    "mkdirp": "~0.3.5"
   },
   "devDependencies": {
     "automaton": "~0.1.4",
