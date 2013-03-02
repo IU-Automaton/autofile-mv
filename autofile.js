@@ -10,7 +10,7 @@ module.exports = function (task) {
     task
     .id('mv')
     .name('Move')
-    .description('Move a file or set of files.')
+    .description('Move files and folders.')
     .author('Indigo United')
 
     .option('files', 'Which files should be moved. Accepts an object in which keys are the source files and values the destination. Source values support minimatch.')

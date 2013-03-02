@@ -1,7 +1,7 @@
 {
   "name": "autofile-mv",
   "version": "0.0.0",
-  "description": "Move a file or set of files.",
+  "description": "Move files and folders.",
   "main": "autofile.js",
   "scripts": {
     "test": "mocha -R spec"

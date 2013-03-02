@@ -3,7 +3,7 @@
 mv
 ===
 
-Move a file or set of files.
+Move files and folders.
 
 *Indigo United 2013*
 
