@@ -5,10 +5,9 @@ var async   = require('async');
 var path    = require('path');
 var fs      = require('fs');
 var mkdirp  = require('mkdirp');
-var mv = require('mv');
+var mv      = require('mv');
 
 module.exports = function (task) {
-
     task
     .id('mv')
     .name('Move')
@@ -174,7 +173,6 @@ function processPatternMatch(pattern, files, dirs, dst, ctx, next) {
  */
 function move(src, dst, ctx, next) {
     ctx.log.debugln('Moving ' + src + ' to ' + dst);
-    //fs.rename(src, dst, next);
     mv(src, dst, next);
 }
 
