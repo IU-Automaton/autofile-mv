@@ -80,6 +80,26 @@ describe('mv', function () {
         });
     });
 
+    it('should move file to new file (deeply)', function (done) {
+        var files       = {},
+            filename    = 'file1.json',
+            newFilename = 'other_file1.json';
+
+        files[assetsDir + filename] = target + 'foo/' + newFilename;
+
+        automaton.run(mv, {
+            files: files
+        }, function (err) {
+            if (err) {
+                throw err;
+            }
+
+            expect(isFile(target + 'foo/' + newFilename)).to.be(true);
+            expect(isFile(assetsDir + filename)).to.be(false);
+            done();
+        });
+    });
+
     it('should move file to folder', function (done) {
         var files    = {},
             filename = 'file1.json';
@@ -148,21 +168,6 @@ describe('mv', function () {
             expect(isFile(testTarget + 'assets/file2')).to.be(true);
             expect(isFile(testTarget + 'assets/.file')).to.be(true);
 
-            done();
-        });
-    });
-
-    it('should move folder - destination folder does not exist (should return error)', function (done) {
-        var files      = {},
-            testTarget = target + 'not/not/';
-
-        files[assetsDir] = testTarget;
-
-        automaton.run(mv, {
-            files: files
-        }, function (err) {
-            expect(err).to.be.an(Error);
-            expect(err.message).to.match(/ENOENT/);
             done();
         });
     });
