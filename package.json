@@ -1,6 +1,6 @@
 {
   "name": "autofile-mv",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Move files and folders.",
   "main": "autofile.js",
   "scripts": {
