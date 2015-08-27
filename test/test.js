@@ -15,6 +15,9 @@ describe('mv', function () {
         target    = tmp + 'mv/',
         assetsDir = target + 'assets/';
 
+
+    console.log(assetsDir);
+
     function clean(done) {
         rimraf(tmp, done);
     }
@@ -39,7 +42,7 @@ describe('mv', function () {
             done();
         });
     });
-    after(clean);
+    // after(clean);
 
     it('should move file to file', function (done) {
         var files    = {},
@@ -236,6 +239,61 @@ describe('mv', function () {
             expect(isFile(anotherTarget + 'another_assets/' + file1)).to.be(true);
             expect(isFile(anotherTarget + 'another_assets/' + file2)).to.be(true);
             expect(isFile(anotherTarget + 'another_assets/' + file3)).to.be(true);
+
+            expect(isFile(anotherAssetsDir + file2)).to.be(false);
+            expect(isFile(anotherAssetsDir + file2)).to.be(false);
+            expect(isFile(anotherAssetsDir + file2)).to.be(false);
+
+            done();
+        });
+    });
+
+    it.only('should move folders with regex', function (done) {
+        var files            = {},
+            file1            = 'file1.json',
+            file2            = 'file2',
+            file3            = '.file',
+            anotherAssetsDir = target + 'another_assets/',
+            anotherTarget    = __dirname + '/tmp/mv/another_target/';
+
+
+        // create assets dir in target
+        fs.mkdirSync(anotherAssetsDir, '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt', '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt-PT', '0777');
+
+        // copy assets
+        fs.writeFileSync(anotherAssetsDir + file1, fs.readFileSync(__dirname + '/assets/file1.json'));
+        fs.writeFileSync(anotherAssetsDir + file2, fs.readFileSync(__dirname + '/assets/file2'));
+        fs.writeFileSync(anotherAssetsDir + file3, fs.readFileSync(__dirname + '/assets/.file'));
+        fs.writeFileSync(anotherAssetsDir + '/pt/pt.js', fs.readFileSync(__dirname + '/assets/pt/pt.js'));
+        fs.writeFileSync(anotherAssetsDir + '/pt-PT/pt-PT.js', fs.readFileSync(__dirname + '/assets/pt-PT/pt-PT.js'));
+
+        files[assetsDir + '/*']        = target + 'one_target/';
+        files[anotherAssetsDir + '/**/*']        = target + 'one_target/';
+
+        automaton.run(mv, {
+            files: files
+        }, function (err) {
+            if (err) {
+                throw err;
+            }
+
+            return done();
+            // expect(isFile(target + 'one_target/assets/' + file1)).to.be(true);
+            // expect(isFile(target + 'one_target/assets/' + file2)).to.be(true);
+            // expect(isFile(target + 'one_target/assets/' + file3)).to.be(true);
+
+            console.log(assetsDir);
+            console.log(isDir(assetsDir));
+            expect(isDir(assetsDir)).to.be(false);
+            expect(isFile(assetsDir + file1)).to.be(false);
+            expect(isFile(assetsDir + file2)).to.be(false);
+            expect(isFile(assetsDir + file3)).to.be(false);
+
+            // expect(isFile(anotherTarget + 'another_assets/' + file1)).to.be(true);
+            // expect(isFile(anotherTarget + 'another_assets/' + file2)).to.be(true);
+            // expect(isFile(anotherTarget + 'another_assets/' + file3)).to.be(true);
 
             expect(isFile(anotherAssetsDir + file2)).to.be(false);
             expect(isFile(anotherAssetsDir + file2)).to.be(false);
