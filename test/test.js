@@ -15,9 +15,6 @@ describe('mv', function () {
         target    = tmp + 'mv/',
         assetsDir = target + 'assets/';
 
-
-    console.log(assetsDir);
-
     function clean(done) {
         rimraf(tmp, done);
     }
@@ -42,13 +39,12 @@ describe('mv', function () {
             done();
         });
     });
-    // after(clean);
+    after(clean);
 
     it('should move file to file', function (done) {
-        var files    = {},
-            filename = 'file1.json';
+        var files = {};
 
-        files[assetsDir + filename] = target + filename;
+        files[assetsDir + 'file1.json'] = target + 'file1.json';
 
         automaton.run(mv, {
             files: files
@@ -57,18 +53,16 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + filename)).to.be(true);
-            expect(isFile(assetsDir + filename)).to.be(false);
+            expect(isFile(target + 'file1.json')).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
             done();
         });
     });
 
     it('should move file to new file', function (done) {
-        var files       = {},
-            filename    = 'file1.json',
-            newFilename = 'other_file1.json';
+        var files = {};
 
-        files[assetsDir + filename] = target + newFilename;
+        files[assetsDir + 'file1.json'] = target + 'other_file1.json';
 
         automaton.run(mv, {
             files: files
@@ -77,18 +71,16 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + newFilename)).to.be(true);
-            expect(isFile(assetsDir + filename)).to.be(false);
+            expect(isFile(target + 'other_file1.json')).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
             done();
         });
     });
 
     it('should move file to new file (deeply)', function (done) {
-        var files       = {},
-            filename    = 'file1.json',
-            newFilename = 'other_file1.json';
+        var files = {};
 
-        files[assetsDir + filename] = target + 'foo/' + newFilename;
+        files[assetsDir + 'file1.json'] = target + 'foo/other_file1.json';
 
         automaton.run(mv, {
             files: files
@@ -97,17 +89,16 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + 'foo/' + newFilename)).to.be(true);
-            expect(isFile(assetsDir + filename)).to.be(false);
+            expect(isFile(target + 'foo/other_file1.json')).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
             done();
         });
     });
 
     it('should move file to folder', function (done) {
-        var files    = {},
-            filename = 'file1.json';
+        var files = {};
 
-        files[assetsDir + filename] = target;
+        files[assetsDir + 'file1.json'] = target;
 
         automaton.run(mv, {
             files: files
@@ -116,8 +107,8 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + filename)).to.be(true);
-            expect(isFile(assetsDir + filename)).to.be(false);
+            expect(isFile(target + 'file1.json')).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
             done();
         });
     });
@@ -177,12 +168,10 @@ describe('mv', function () {
 
     it('should move files', function (done) {
         var files         = {},
-            file1         = 'file1.json',
-            file2         = 'file2',
             anotherTarget = __dirname + '/tmp/mv/another_target/';
 
-        files[assetsDir + file1] = target;
-        files[assetsDir + file2] = anotherTarget;
+        files[assetsDir + 'file1.json'] = target;
+        files[assetsDir + 'file2'] = anotherTarget;
 
         automaton.run(mv, {
             files: files
@@ -191,31 +180,27 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + file1)).to.be(true);
-            expect(isFile(assetsDir + file1)).to.be(false);
+            expect(isFile(target + 'file1.json')).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
 
-            expect(isFile(anotherTarget + file2)).to.be(true);
-            expect(isFile(assetsDir + file2)).to.be(false);
+            expect(isFile(anotherTarget + 'file2')).to.be(true);
+            expect(isFile(assetsDir + 'file2')).to.be(false);
             done();
         });
     });
 
     it('should move folders', function (done) {
         var files            = {},
-            file1            = 'file1.json',
-            file2            = 'file2',
-            file3            = '.file',
             anotherAssetsDir = target + 'another_assets/',
             anotherTarget    = __dirname + '/tmp/mv/another_target/';
-
 
         // create assets dir in target
         fs.mkdirSync(anotherAssetsDir, '0777');
 
         // copy assets
-        fs.writeFileSync(anotherAssetsDir + file1, fs.readFileSync(__dirname + '/assets/file1.json'));
-        fs.writeFileSync(anotherAssetsDir + file2, fs.readFileSync(__dirname + '/assets/file2'));
-        fs.writeFileSync(anotherAssetsDir + file3, fs.readFileSync(__dirname + '/assets/.file'));
+        fs.writeFileSync(anotherAssetsDir + 'file1.json', fs.readFileSync(__dirname + '/assets/file1.json'));
+        fs.writeFileSync(anotherAssetsDir + 'file2', fs.readFileSync(__dirname + '/assets/file2'));
+        fs.writeFileSync(anotherAssetsDir + '.file', fs.readFileSync(__dirname + '/assets/.file'));
 
         files[assetsDir]        = target + 'one_target/';
         files[anotherAssetsDir] = anotherTarget;
@@ -227,89 +212,32 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + 'one_target/assets/' + file1)).to.be(true);
-            expect(isFile(target + 'one_target/assets/' + file2)).to.be(true);
-            expect(isFile(target + 'one_target/assets/' + file3)).to.be(true);
+            expect(isFile(target + 'one_target/assets/file1.json')).to.be(true);
+            expect(isFile(target + 'one_target/assets/file2')).to.be(true);
+            expect(isFile(target + 'one_target/assets/.file')).to.be(true);
 
             expect(isDir(assetsDir)).to.be(false);
-            expect(isFile(assetsDir + file1)).to.be(false);
-            expect(isFile(assetsDir + file2)).to.be(false);
-            expect(isFile(assetsDir + file3)).to.be(false);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(assetsDir + 'file2')).to.be(false);
+            expect(isFile(assetsDir + '.file')).to.be(false);
 
-            expect(isFile(anotherTarget + 'another_assets/' + file1)).to.be(true);
-            expect(isFile(anotherTarget + 'another_assets/' + file2)).to.be(true);
-            expect(isFile(anotherTarget + 'another_assets/' + file3)).to.be(true);
+            expect(isFile(anotherTarget + 'another_assets/file1.json')).to.be(true);
+            expect(isFile(anotherTarget + 'another_assets/file2')).to.be(true);
+            expect(isFile(anotherTarget + 'another_assets/.file')).to.be(true);
 
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
-
-            done();
-        });
-    });
-
-    it.only('should move folders with regex', function (done) {
-        var files            = {},
-            file1            = 'file1.json',
-            file2            = 'file2',
-            file3            = '.file',
-            anotherAssetsDir = target + 'another_assets/',
-            anotherTarget    = __dirname + '/tmp/mv/another_target/';
-
-
-        // create assets dir in target
-        fs.mkdirSync(anotherAssetsDir, '0777');
-        fs.mkdirSync(anotherAssetsDir + 'pt', '0777');
-        fs.mkdirSync(anotherAssetsDir + 'pt-PT', '0777');
-
-        // copy assets
-        fs.writeFileSync(anotherAssetsDir + file1, fs.readFileSync(__dirname + '/assets/file1.json'));
-        fs.writeFileSync(anotherAssetsDir + file2, fs.readFileSync(__dirname + '/assets/file2'));
-        fs.writeFileSync(anotherAssetsDir + file3, fs.readFileSync(__dirname + '/assets/.file'));
-        fs.writeFileSync(anotherAssetsDir + '/pt/pt.js', fs.readFileSync(__dirname + '/assets/pt/pt.js'));
-        fs.writeFileSync(anotherAssetsDir + '/pt-PT/pt-PT.js', fs.readFileSync(__dirname + '/assets/pt-PT/pt-PT.js'));
-
-        files[assetsDir + '/*']        = target + 'one_target/';
-        files[anotherAssetsDir + '/**/*']        = target + 'one_target/';
-
-        automaton.run(mv, {
-            files: files
-        }, function (err) {
-            if (err) {
-                throw err;
-            }
-
-            return done();
-            // expect(isFile(target + 'one_target/assets/' + file1)).to.be(true);
-            // expect(isFile(target + 'one_target/assets/' + file2)).to.be(true);
-            // expect(isFile(target + 'one_target/assets/' + file3)).to.be(true);
-
-            console.log(assetsDir);
-            console.log(isDir(assetsDir));
-            expect(isDir(assetsDir)).to.be(false);
-            expect(isFile(assetsDir + file1)).to.be(false);
-            expect(isFile(assetsDir + file2)).to.be(false);
-            expect(isFile(assetsDir + file3)).to.be(false);
-
-            // expect(isFile(anotherTarget + 'another_assets/' + file1)).to.be(true);
-            // expect(isFile(anotherTarget + 'another_assets/' + file2)).to.be(true);
-            // expect(isFile(anotherTarget + 'another_assets/' + file3)).to.be(true);
-
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
-            expect(isFile(anotherAssetsDir + file2)).to.be(false);
+            expect(isFile(anotherAssetsDir + 'another_assets/file1.json')).to.be(false);
+            expect(isFile(anotherAssetsDir + 'another_assets/file2')).to.be(false);
+            expect(isFile(anotherAssetsDir + 'another_assets/.file')).to.be(false);
 
             done();
         });
     });
 
     it('should move files - first an invalid file and then a valid file after', function (done) {
-        var files       = {},
-            filename    = 'file1.json',
-            invalidFile = 'invalid_file';
+        var files = {};
 
-        files[assetsDir + invalidFile] = target;
-        files[assetsDir + filename]    = target + filename;
+        files[assetsDir + 'invalid_file'] = target;
+        files[assetsDir + 'file1.json']    = target + 'file1.json';
 
         automaton.run(mv, {
             files: files
@@ -318,22 +246,20 @@ describe('mv', function () {
             expect(err).to.be.an(Error);
             expect(err.message).to.match(/ENOENT/);
 
-            expect(isFile(target + invalidFile)).to.be(false);
-            expect(isFile(target + filename)).to.be(false);
+            expect(isFile(target + 'invalid_file')).to.be(false);
+            expect(isFile(target + 'file1.json')).to.be(false);
 
-            expect(isFile(assetsDir + invalidFile)).to.be(false);
-            expect(isFile(assetsDir + filename)).to.be(true);
+            expect(isFile(assetsDir + 'invalid_file')).to.be(false);
+            expect(isFile(assetsDir + 'file1.json')).to.be(true);
             done();
         });
     });
 
     it('should move files - first a valid file and then an invalid file after', function (done) {
-        var files       = {},
-            filename    = 'file1.json',
-            invalidFile = 'invalid_file';
+        var files = {};
 
-        files[assetsDir + filename]    = target + filename;
-        files[assetsDir + invalidFile] = target;
+        files[assetsDir + 'file1.json']    = target + 'file1.json';
+        files[assetsDir + 'invalid_file'] = target;
 
         automaton.run(mv, {
             files: files
@@ -342,11 +268,11 @@ describe('mv', function () {
             expect(err).to.be.an(Error);
             expect(err.message).to.match(/ENOENT/);
 
-            expect(isFile(target + filename)).to.be(true);
-            expect(isFile(target + invalidFile)).to.be(false);
+            expect(isFile(target + 'file1.json')).to.be(true);
+            expect(isFile(target + 'invalid_file')).to.be(false);
 
-            expect(isFile(assetsDir + filename)).to.be(false);
-            expect(isFile(assetsDir + invalidFile)).to.be(false);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(assetsDir + 'invalid_file')).to.be(false);
 
             done();
         });
@@ -378,11 +304,8 @@ describe('mv', function () {
         });
     });
 
-    it('should move files and folders recursivelly - source/**/*', function (done) {
+    it('should move files and folders recursively - source/**/*', function (done) {
         var files            = {},
-            file1            = 'file1.json',
-            file2            = 'file2',
-            file3            = '.file',
             testTarget       = target + 'test/',
             anotherAssetsDir = assetsDir + 'another/';
 
@@ -390,9 +313,9 @@ describe('mv', function () {
         fs.mkdirSync(anotherAssetsDir, '0777');
 
         // copy assets
-        fs.writeFileSync(anotherAssetsDir + file1, fs.readFileSync(__dirname + '/assets/file1.json'));
-        fs.writeFileSync(anotherAssetsDir + file2, fs.readFileSync(__dirname + '/assets/file2'));
-        fs.writeFileSync(anotherAssetsDir + file3, fs.readFileSync(__dirname + '/assets/.file'));
+        fs.writeFileSync(anotherAssetsDir + 'file1.json', fs.readFileSync(__dirname + '/assets/file1.json'));
+        fs.writeFileSync(anotherAssetsDir + 'file2', fs.readFileSync(__dirname + '/assets/file2'));
+        fs.writeFileSync(anotherAssetsDir + '.file', fs.readFileSync(__dirname + '/assets/.file'));
 
         files[assetsDir + '**/*'] = testTarget;
 
@@ -419,6 +342,56 @@ describe('mv', function () {
             expect(isFile(testTarget + 'another/' + 'file1.json')).to.be(true);
             expect(isFile(testTarget + 'another/' + 'file2')).to.be(true);
             expect(isFile(testTarget + 'another/' + '.file')).to.be(true);
+
+            done();
+        });
+    });
+
+    it('should move files and folders recursively - source/**/* with same file prefixes', function (done) {
+        var files            = {},
+            anotherAssetsDir = target + 'another_assets/',
+            testTarget       = target + 'test/';
+
+        // create assets dir in target
+        fs.mkdirSync(anotherAssetsDir, '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt', '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt/something', '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt-PT', '0777');
+        fs.mkdirSync(anotherAssetsDir + 'pt-PT/something', '0777');
+
+        // copy assets
+        fs.writeFileSync(anotherAssetsDir + '/pt/pt.js', fs.readFileSync(__dirname + '/assets/pt/pt.js'));
+        fs.writeFileSync(anotherAssetsDir + '/pt-PT/pt-PT.js', fs.readFileSync(__dirname + '/assets/pt-PT/pt-PT.js'));
+        fs.writeFileSync(anotherAssetsDir + 'pt/something/foo.json', fs.readFileSync(__dirname + '/assets/file1.json'));
+        fs.writeFileSync(anotherAssetsDir + 'pt-PT/something/foo.json', fs.readFileSync(__dirname + '/assets/file1.json'));
+
+        files[assetsDir + '/*']           = testTarget;
+        files[anotherAssetsDir + '/**/*'] = testTarget;
+
+        automaton.run(mv, {
+            files: files
+        }, function (err) {
+            if (err) {
+                throw err;
+            }
+
+            expect(isFile(testTarget + 'file1.json')).to.be(true);
+            expect(isFile(testTarget + 'file2')).to.be(true);
+            expect(isFile(testTarget + '.file')).to.be(false);
+
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(assetsDir + 'file2')).to.be(false);
+            expect(isFile(assetsDir + '.file')).to.be(true);
+
+            expect(isFile(testTarget + 'pt/pt.js')).to.be(true);
+            expect(isFile(testTarget + 'pt/something/foo.json')).to.be(true);
+            expect(isFile(testTarget + 'pt-PT/pt-PT.js')).to.be(true);
+            expect(isFile(testTarget + 'pt-PT/something/foo.json')).to.be(true);
+
+            expect(isFile(anotherAssetsDir + 'pt/pt.js')).to.be(false);
+            expect(isFile(anotherAssetsDir + 'pt/something/foo.json')).to.be(false);
+            expect(isFile(anotherAssetsDir + 'pt-PT/pt-PT.js')).to.be(false);
+            expect(isFile(anotherAssetsDir + 'pt-PT/something/foo.json')).to.be(false);
 
             done();
         });
@@ -543,9 +516,6 @@ describe('mv', function () {
 
     it('should work with sources containing symlinks deeply inside them - with source/**/*', function (done) {
         var files            = {},
-            file1            = 'file1.json',
-            file2            = 'file2',
-            file3            = '.file',
             symlink          = target + '../symlink',
             testTarget       = target + 'test/',
             anotherAssetsDir = assetsDir + 'another/';
@@ -557,9 +527,9 @@ describe('mv', function () {
         fs.mkdirSync(anotherAssetsDir, '0777');
 
         // copy assets
-        fs.writeFileSync(anotherAssetsDir + file1, fs.readFileSync(__dirname + '/assets/file1.json'));
-        fs.writeFileSync(anotherAssetsDir + file2, fs.readFileSync(__dirname + '/assets/file2'));
-        fs.writeFileSync(anotherAssetsDir + file3, fs.readFileSync(__dirname + '/assets/.file'));
+        fs.writeFileSync(anotherAssetsDir + 'file1.json', fs.readFileSync(__dirname + '/assets/file1.json'));
+        fs.writeFileSync(anotherAssetsDir + 'file2', fs.readFileSync(__dirname + '/assets/file2'));
+        fs.writeFileSync(anotherAssetsDir + '.file', fs.readFileSync(__dirname + '/assets/.file'));
 
         files[symlink + '/**/*'] = testTarget;
 
@@ -571,33 +541,30 @@ describe('mv', function () {
             }
 
             expect(isDir(testTarget)).to.be(true);
-            expect(isFile(testTarget + file1)).to.be(true);
-            expect(isFile(testTarget + file2)).to.be(true);
-            expect(isFile(testTarget + file3)).to.be(false);
+            expect(isFile(testTarget + 'file1.json')).to.be(true);
+            expect(isFile(testTarget + 'file2')).to.be(true);
+            expect(isFile(testTarget + '.file')).to.be(false);
 
             expect(isDir(testTarget + '/another')).to.be(true);
-            expect(isFile(testTarget + '/another/' + file1)).to.be(true);
-            expect(isFile(testTarget + '/another/' + file2)).to.be(true);
-            expect(isFile(testTarget + '/another/' + file3)).to.be(true);
+            expect(isFile(testTarget + '/another/file1.json')).to.be(true);
+            expect(isFile(testTarget + '/another/file2')).to.be(true);
+            expect(isFile(testTarget + '/another/.file')).to.be(true);
 
             expect(isDir(symlink)).to.be(true);
-            expect(isFile(symlink + '/' + file1)).to.be(false);
-            expect(isFile(symlink + '/' + file2)).to.be(false);
-            expect(isFile(symlink + '/' + file3)).to.be(true);
+            expect(isFile(symlink + '/file1.json')).to.be(false);
+            expect(isFile(symlink + '/file2')).to.be(false);
+            expect(isFile(symlink + '/.file')).to.be(true);
 
             expect(isDir(symlink + '/another/')).to.be(false);
-            expect(isFile(symlink + '/another/' + file1)).to.be(false);
-            expect(isFile(symlink + '/antoher/' + file2)).to.be(false);
-            expect(isFile(symlink + '/another/' + file3)).to.be(false);
+            expect(isFile(symlink + '/another/file1.json')).to.be(false);
+            expect(isFile(symlink + '/antoher/file2')).to.be(false);
+            expect(isFile(symlink + '/another/.file')).to.be(false);
             done();
         });
     });
 
     it('should work with destinations as symlinks', function (done) {
         var files      = {},
-            file1      = 'file1.json',
-            file2      = 'file2',
-            file3      = '.file',
             symlink    = target + '../symlink',
             testTarget = target + 'test/';
 
@@ -607,9 +574,9 @@ describe('mv', function () {
         // create symlink to assets dir
         fs.symlinkSync(testTarget, symlink, 'dir');
 
-        files[assetsDir + file1] = symlink;
-        files[assetsDir + file2] = symlink;
-        files[assetsDir + file3] = symlink;
+        files[assetsDir + 'file1.json'] = symlink;
+        files[assetsDir + 'file2'] = symlink;
+        files[assetsDir + '.file'] = symlink;
 
         automaton.run(mv, {
             files: files
@@ -620,13 +587,13 @@ describe('mv', function () {
 
             expect(isDir(testTarget)).to.be(true);
             expect(isDir(symlink + '/')).to.be(true);
-            expect(isFile(symlink + '/' + file1)).to.be(true);
-            expect(isFile(symlink + '/' + file2)).to.be(true);
-            expect(isFile(symlink + '/' + file3)).to.be(true);
+            expect(isFile(symlink + '/file1.json')).to.be(true);
+            expect(isFile(symlink + '/file2')).to.be(true);
+            expect(isFile(symlink + '/.file')).to.be(true);
 
-            expect(isFile(assetsDir + file1)).to.be(false);
-            expect(isFile(assetsDir + file2)).to.be(false);
-            expect(isFile(assetsDir + file3)).to.be(false);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(assetsDir + 'file2')).to.be(false);
+            expect(isFile(assetsDir + '.file')).to.be(false);
 
             done();
         });
@@ -634,7 +601,6 @@ describe('mv', function () {
 
     it('should move file to folder with default permissions', function (done) {
         var files      = {},
-            file       = 'file1.json',
             testTarget = target + 'test/',
             modeDir,
             modeFile;
@@ -643,7 +609,7 @@ describe('mv', function () {
         fs.mkdirSync(testTarget, '0777');
 
         // get file mode
-        modeFile = fs.statSync(assetsDir + file).mode;
+        modeFile = fs.statSync(assetsDir + 'file1.json').mode;
 
         // get default dir mode
         modeDir = fs.statSync(assetsDir).mode;
@@ -660,10 +626,10 @@ describe('mv', function () {
             expect(isDir(assetsDir)).to.be(false);
             expect(isDir(testTarget + 'assets/')).to.be(true);
 
-            expect(isFile(assetsDir + file)).to.be(false);
-            expect(isFile(testTarget + 'assets/' + file)).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(testTarget + 'assets/file1.json')).to.be(true);
 
-            expect(fs.statSync(testTarget + 'assets/' + file).mode).to.equal(modeFile);
+            expect(fs.statSync(testTarget + 'assets/file1.json').mode).to.equal(modeFile);
             expect(fs.statSync(testTarget + 'assets/').mode).to.equal(modeDir);
             done();
         });
@@ -671,9 +637,6 @@ describe('mv', function () {
 
     it('should move empty folders', function (done) {
         var files      = {},
-            file1      = 'file1.json',
-            file2      = 'file2',
-            file3      = '.file',
             testTarget = target + 'test/',
             emptyDir   = assetsDir + 'empty/';
 
@@ -690,24 +653,23 @@ describe('mv', function () {
             }
 
             expect(isDir(testTarget)).to.be(true);
-            expect(isFile(testTarget + file1)).to.be(true);
-            expect(isFile(testTarget + file2)).to.be(true);
-            expect(isFile(testTarget + file3)).to.be(false);
+            expect(isFile(testTarget + 'file1.json')).to.be(true);
+            expect(isFile(testTarget + 'file2')).to.be(true);
+            expect(isFile(testTarget + '.file')).to.be(false);
 
             expect(isDir(emptyDir)).to.be(false);
             expect(isDir(testTarget + 'empty/')).to.be(true);
 
-            expect(isFile(assetsDir + file1)).to.be(false);
-            expect(isFile(assetsDir + file2)).to.be(false);
-            expect(isFile(assetsDir + file3)).to.be(true);
+            expect(isFile(assetsDir + 'file1.json')).to.be(false);
+            expect(isFile(assetsDir + 'file2')).to.be(false);
+            expect(isFile(assetsDir + '.file')).to.be(true);
 
             done();
         });
     });
 
     it('should pass over the glob options - should not move the .file', function (done) {
-        var files    = {},
-            filename = '.file';
+        var files    = {};
 
         files[assetsDir + '/*'] = target;
 
@@ -718,15 +680,14 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + filename)).to.be(false);
-            expect(isFile(assetsDir + filename)).to.be(true);
+            expect(isFile(target + '.file')).to.be(false);
+            expect(isFile(assetsDir + '.file')).to.be(true);
             done();
         });
     });
 
     it('should pass over the glob options - should move the .file', function (done) {
-        var files    = {},
-            filename = '.file';
+        var files    = {};
 
         files[assetsDir + '/*'] = target;
 
@@ -740,8 +701,8 @@ describe('mv', function () {
                 throw err;
             }
 
-            expect(isFile(target + filename)).to.be(true);
-            expect(isFile(assetsDir + filename)).to.be(false);
+            expect(isFile(target + '.file')).to.be(true);
+            expect(isFile(assetsDir + '.file')).to.be(false);
             done();
         });
     });

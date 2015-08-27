@@ -251,7 +251,7 @@ function cleanup(files, dirs) {
     // Cleanup dirs that overlap eachother
     for (x = 0; x < dirs.length; ++x) {
         for (y = x + 1; y < dirs.length; ++y) {
-            if (dirs[y].indexOf(dirs[x]) === 0) {
+            if (dirs[y].indexOf(dirs[x] + path.sep) === 0) {
                 dirs.splice(y, 1);
                 --x;
                 --y;
